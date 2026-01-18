@@ -1,0 +1,59 @@
+{% extends 'boutique/base.html' %}
+
+{% block content %}
+
+<div class="detail-wrapper">
+    <!-- Image -->
+    <div class="detail-image">
+        <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+    </div>
+
+    <!-- Infos -->
+    <div class="detail-content">
+        <h1 style="margin-top: 0;">{{ produit.nom }}</h1>
+        <span class="product-cat">{{ produit.categorie }}</span>
+        
+        <p style="margin: 20px 0; line-height: 1.6;">{{ produit.description }}</p>
+
+        <form action="{% url 'ajouter_panier' produit.id %}" method="POST" onsubmit="alert('Article ajouté au panier !');">
+        {% csrf_token %}
+            
+            <div style="margin-bottom: 20px;">
+                <label style="font-weight: 600;">Taille</label>
+                <select name="taille" required>
+                    {% for t in tailles %}
+                    <option value="{{ t }}">{{ t }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div style="margin-bottom: 30px;">
+                <label style="font-weight: 600;">Couleur</label>
+                <select name="couleur" required>
+                    {% for c in couleurs %}
+                    <option value="{{ c }}">{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px;">
+                AJOUTER AU PANIER
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Similaires -->
+<h3 style="margin-top: 50px;">Vous aimerez aussi</h3>
+<div class="product-grid">
+    {% for sim in similaires %}
+    <a href="{% url 'detail_produit' sim.id %}" class="product-card">
+        <img src="{{ sim.image.url }}" class="product-image">
+        <div class="product-info">
+            <h3 class="product-title">{{ sim.nom }}</h3>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+
+{% endblock %}

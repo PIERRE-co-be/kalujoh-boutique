@@ -1,0 +1,68 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KALUJOH</title>
+    
+    <!-- Favicon & Mobile Icons -->
+    <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
+    <link rel="apple-touch-icon" href="{% static 'img/favicon.svg' %}">
+    <link rel="manifest" href="{% static 'manifest.json' %}">
+    <meta name="theme-color" content="#000000">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Animation -->
+    <div id="loader-wrapper">
+        <div class="logo-anim">KALUJOH</div>
+    </div>
+
+    <header>
+        <div class="header-content">
+            <!-- LOGO SVG -->
+            <a href="{% url 'accueil' %}" class="logo-container">
+                <img src="{% static 'img/logo.svg' %}" alt="KALUJOH Logo" class="logo-img">
+            </a>
+            
+            <nav>
+                <a href="{% url 'accueil' %}" class="nav-link">Accueil</a>
+                {% for cat in categories_menu %}
+                    <a href="{% url 'produits_par_categorie' cat.id %}" class="nav-link">{{ cat.nom }}</a>
+                {% endfor %}
+                
+                <!-- ICONE PANIER PRO -->
+                <a href="{% url 'voir_panier' %}" class="cart-btn">
+                    <!-- Dessin SVG du sac -->
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    
+                    <!-- Le badge rouge avec le nombre -->
+                    {% if request.session.panier %}
+                        <span class="cart-badge">{{ request.session.panier|length }}</span>
+                    {% else %}
+                         <span class="cart-badge" style="display:none;">0</span>
+                    {% endif %}
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        <p>&copy; 2026 KALUJOH. La mode pour tous.</p>
+    </footer>
+
+</body>
+</html>

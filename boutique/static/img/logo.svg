@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
+  <!-- Fond transparent -->
+  <style>
+    .text { font-family: 'Arial', sans-serif; font-weight: 900; fill: #000; font-size: 48px; letter-spacing: 2px; }
+    .dot { fill: #e91e63; }
+  </style>
+  <text x="10" y="55" class="text">KALUJOH<tspan class="dot">.</tspan></text>
+</svg>

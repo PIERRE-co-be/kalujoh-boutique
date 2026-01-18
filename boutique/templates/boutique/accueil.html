@@ -1,0 +1,37 @@
+{% extends 'boutique/base.html' %}
+
+{% block content %}
+
+<!-- Pubs -->
+{% if pubs and not titre_page %} <!-- On cache les pubs si on est dans une catégorie spécifique -->
+<div style="overflow-x: auto; display: flex; gap: 20px; margin-bottom: 40px; padding-bottom: 10px;">
+    {% for pub in pubs %}
+    <div style="min-width: 100%; border-radius: 10px; overflow: hidden; position: relative; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+        <img src="{{ pub.image.url }}" style="width: 100%; display: block;">
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Titre -->
+<h2 style="margin-bottom: 25px;">
+    {% if titre_page %} Collection {{ titre_page }} {% else %} Nouveautés {% endif %}
+</h2>
+
+<!-- Grille Produits -->
+<div class="product-grid">
+    {% for produit in produits %}
+    <a href="{% url 'detail_produit' produit.id %}" class="product-card">
+        <img src="{{ produit.image.url }}" class="product-image" alt="{{ produit.nom }}">
+        <div class="product-info">
+            <h3 class="product-title">{{ produit.nom }}</h3>
+            <span class="product-cat">{{ produit.categorie.nom }}</span>
+            <div style="margin-top: 10px; font-weight: bold; color: var(--accent);">Voir Détails &rarr;</div>
+        </div>
+    </a>
+    {% empty %}
+    <p>Aucun article trouvé dans cette section.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

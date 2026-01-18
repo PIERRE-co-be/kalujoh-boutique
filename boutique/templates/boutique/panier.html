@@ -1,0 +1,110 @@
+{% extends 'boutique/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Conversion des données pour JS -->
+{{ panier|json_script:"donnees-panier" }}
+
+<h2 style="text-align: center; margin: 30px 0;">Votre Panier</h2>
+
+{% if panier %}
+    <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Liste des articles -->
+        <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            {% for key, item in panier.items %}
+            <div style="display: flex; align-items: center; border-bottom: 1px solid #eee; padding: 15px 0;">
+                
+                <!-- Image -->
+                <img src="{{ item.image }}" style="width: 70px; height: 70px; object-fit: cover; border-radius: 5px; margin-right: 15px;">
+                
+                <!-- Infos -->
+                <div style="flex-grow: 1;">
+                    <strong style="font-size: 1.1rem;">{{ item.nom }}</strong><br>
+                    <small style="color: #666;">
+                        Taille: {{ item.taille }} | Couleur: {{ item.couleur }}
+                    </small>
+                </div>
+
+                <!-- Gestion Quantité -->
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <a href="{% url 'modifier_quantite' key 'moins' %}" style="background: #eee; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 50%; text-decoration: none; font-weight: bold;">-</a>
+                    <span>{{ item.quantite }}</span>
+                    <a href="{% url 'modifier_quantite' key 'plus' %}" style="background: #eee; width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; border-radius: 50%; text-decoration: none; font-weight: bold;">+</a>
+                </div>
+
+                <!-- Supprimer -->
+                <a href="{% url 'supprimer_item' key %}" style="margin-left: 15px; color: red; text-decoration: none; font-size: 1.2rem;">&times;</a>
+            </div>
+            {% endfor %}
+            
+            <div style="text-align: right; margin-top: 15px;">
+                <a href="{% url 'vider_panier' %}" style="color: #e91e63; font-size: 0.9rem;">Tout supprimer</a>
+            </div>
+        </div>
+
+        <!-- Formulaire -->
+        <div style="background: #f8f9fa; border-radius: 10px; padding: 25px;">
+            <h3>Détails de livraison</h3>
+            <input type="text" id="nom" placeholder="Votre Nom complet" required>
+            <input type="tel" id="telephone" placeholder="Votre Numéro WhatsApp" required>
+            <textarea id="adresse" placeholder="Votre Adresse complète" rows="3" required></textarea>
+            
+            <button onclick="envoyerWhatsApp()" class="btn btn-whatsapp" style="font-size: 1.1rem; padding: 15px; border-radius: 50px;">
+                CONFIRMER ET ENVOYER ➔
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function envoyerWhatsApp() {
+            // 1. Récupération des données
+            var rawData = document.getElementById('donnees-panier').textContent;
+            var panierData = JSON.parse(rawData);
+            var nom = document.getElementById('nom').value;
+            var tel = document.getElementById('telephone').value;
+            var adresse = document.getElementById('adresse').value;
+
+            if (nom.trim() === "" || tel.trim() === "" || adresse.trim() === "") {
+                alert("Veuillez remplir vos informations de livraison.");
+                return;
+            }
+
+            // 2. Construction du message
+            var msg = "*NOUVELLE COMMANDE - KALUJOH* 🛒\n";
+            msg += "--------------------------------\n";
+            msg += "*👤 Client :* " + nom + "\n";
+            msg += "*📞 Tel :* " + tel + "\n";
+            msg += "*📍 Adresse :* " + adresse + "\n";
+            msg += "--------------------------------\n\n";
+            msg += "*ARTICLES :*\n";
+
+            for (var key in panierData) {
+                var item = panierData[key];
+                msg += "👗 *" + item.nom + "*\n";
+                msg += "   • Taille : " + item.taille + "\n";
+                msg += "   • Couleur : " + item.couleur + "\n";
+                msg += "   • Quantité : " + item.quantite + "\n";
+                // L'image est envoyée sous forme de LIEN
+                msg += "   • Photo : " + item.full_image_url + "\n\n";
+            }
+
+            msg += "Merci de confirmer ma commande !";
+
+            // 3. Envoi aléatoire
+            var admins = ["243977808580", "243992846700", "243854477444"];
+            var num = admins[Math.floor(Math.random() * admins.length)];
+            
+            window.open("https://wa.me/" + num + "?text=" + encodeURIComponent(msg), '_blank');
+        }
+    </script>
+
+{% else %}
+    <div style="text-align: center; padding: 50px;">
+        <p>Votre panier est vide.</p>
+        <a href="{% url 'accueil' %}" class="btn btn-primary">Voir la boutique</a>
+    </div>
+{% endif %}
+
+{% endblock %}

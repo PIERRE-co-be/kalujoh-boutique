@@ -1,0 +1,17 @@
+# Fichiers python compilés
+__pycache__/
+*.pyc
+
+# Base de données (Optionnel : si tu veux garder tes produits actuels, enlève cette ligne)
+db.sqlite3
+
+# Dossier des fichiers statiques collectés (on les régénérera sur le serveur)
+staticfiles/
+
+# Environnement virtuel (si tu en as un)
+venv/
+env/
+.env
+
+# Fichiers système
+.DS_Store
